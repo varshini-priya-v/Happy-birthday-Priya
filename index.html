@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎁 Surprise For You</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:sans-serif;
+}
+
+/* 🌌 BACKGROUND CANVAS */
+#bg{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-3;
+  background:#0b0f2a;
+}
+
+/* 🔐 LOGIN */
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+#login{
+  text-align:center;
+  z-index:10;
+}
+
+input{
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin:10px;
+}
+
+button{
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  background:#ff4081;
+  color:white;
+  cursor:pointer;
+}
+
+/* 🎁 BOX */
+#box{
+  width:180px;
+  height:180px;
+  background:#ff4081;
+  display:none;
+  border-radius:15px;
+  position:relative;
+  animation:shake 2s infinite;
+  cursor:pointer;
+}
+
+#box::before{
+  content:"🎁";
+  font-size:70px;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+
+@keyframes shake{
+  0%,100%{transform:rotate(0);}
+  50%{transform:rotate(2deg);}
+}
+
+/* 🎂 MAIN */
+#main{
+  display:none;
+  width:90%;
+  max-width:700px;
+  background:rgba(255,255,255,0.95);
+  padding:25px;
+  border-radius:20px;
+  text-align:center;
+  z-index:10;
+}
+
+h1{
+  color:#ff4081;
+}
+
+/* MESSAGE */
+#message{
+  min-height:80px;
+  margin-top:10px;
+  color:#444;
+  font-size:18px;
+  white-space:pre-wrap;
+}
+
+/* SLIDESHOW */
+#slide{
+  width:100%;
+  max-width:350px;
+  height:350px;
+  object-fit:cover;
+  border-radius:15px;
+  border:5px solid #ff4081;
+  margin-top:15px;
+  display:none;
+}
+
+/* 🌠 SHOOTING STAR */
+.shooting-star {
+  position: fixed;
+  width: 140px;
+  height: 2px;
+  background: linear-gradient(90deg, white, transparent);
+  top: 0;
+  left: 0;
+  transform: rotate(-45deg);
+  opacity: 0;
+  z-index: -2;
+  animation: shoot 1s linear forwards;
+  filter: drop-shadow(0 0 6px white);
+}
+
+@keyframes shoot {
+  0% {transform:translate(0,0) rotate(-45deg);opacity:1;}
+  100% {transform:translate(-500px,500px) rotate(-45deg);opacity:0;}
+}
+
+/* 🎊 CONFETTI */
+.confetti{
+  position:absolute;
+  width:10px;
+  height:10px;
+  top:0;
+  animation:fall 4s linear forwards;
+}
+
+@keyframes fall{
+  to{transform:translateY(100vh) rotate(360deg);}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<!-- 🔐 LOGIN -->
+<div id="login">
+  <h2>🔐 Enter Your Name</h2>
+  <input id="name" placeholder="Your name">
+  <br>
+  <button onclick="check()">Unlock Surprise</button>
+</div>
+
+<!-- 🎁 BOX -->
+<div id="box" onclick="openBox()"></div>
+
+<!-- 🎂 MAIN -->
+<div id="main">
+
+  <h1>🎂 Happy Birthday Varshini 🎂</h1>
+
+  <div id="message"></div>
+
+  <img id="slide">
+
+</div>
+
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+/* 🔐 CHECK NAME */
+function check(){
+  let val = document.getElementById("name").value;
+  if(val.trim().toUpperCase()==="Varshini"){
+    document.getElementById("login").style.display="none";
+    document.getElementById("box").style.display="block";
+  }else{
+    alert("❌ Wrong Name");
+  }
+}
+
+/* 🎁 OPEN BOX */
+function openBox(){
+  document.getElementById("box").style.display="none";
+  document.getElementById("main").style.display="block";
+
+  document.getElementById("music").play(); // 🎵 MUSIC
+
+  startTypewriter();
+}
+
+/* ⌨️ TYPEWRITER */
+const text = `Today is your special day ❤️
+
+You are amazing, beautiful and strong ✨
+May your life be full of happiness 🎂
+
+Happy Birthday 🎉🎁`;
+
+let i=0;
+
+function startTypewriter(){
+  let msg = document.getElementById("message");
+
+  let typing = setInterval(()=>{
+    msg.innerHTML += text.charAt(i);
+    i++;
+
+    if(i>=text.length){
+      clearInterval(typing);
+      startSlideshow();
+      confetti();
+    }
+  },50);
+}
+
+/* 📸 SLIDESHOW */
+const images=[
+  "Screenshot_20240429-114229_Tor Browser~2.png",
+  "1676273171391.jpg",
+  "Screenshot_20240429-114456_Tor Browser~2.png",
+  "239745450_347663590401570_3540989231519669068_n.jpg"
+];
+
+let index=0;
+
+function startSlideshow(){
+  let img=document.getElementById("slide");
+  img.style.display="block";
+
+  setInterval(()=>{
+    index=(index+1)%images.length;
+    img.src=images[index];
+  },2500);
+}
+
+/* 🎊 CONFETTI */
+function confetti(){
+  for(let i=0;i<100;i++){
+    let c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=`hsl(${Math.random()*360},100%,50%)`;
+    c.style.animationDuration=(2+Math.random()*3)+"s";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),5000);
+  }
+}
+
+/* 🌠 SHOOTING STARS */
+function shootingStar(){
+  let s=document.createElement("div");
+  s.className="shooting-star";
+  s.style.left=Math.random()*window.innerWidth+"px";
+  s.style.top=Math.random()*window.innerHeight/2+"px";
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),1000);
+}
+
+setInterval(()=>{ if(Math.random()<0.5) shootingStar(); },1200);
+
+/* ⭐ STAR BACKGROUND */
+const canvas=document.getElementById("bg");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+window.addEventListener("resize",()=>{
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+});
+
+let stars=[];
+for(let i=0;i<120;i++){
+  stars.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*2,
+    s:Math.random()*0.5+0.2
+  });
+}
+
+let particles=[];
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // stars
+  stars.forEach(st=>{
+    st.y+=st.s;
+    if(st.y>canvas.height){st.y=0;}
+    ctx.fillStyle="white";
+    ctx.beginPath();
+    ctx.arc(st.x,st.y,st.r,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  // particles
+  particles.forEach((p,i)=>{
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.a-=0.02;
+
+    ctx.fillStyle=`rgba(255,255,255,${p.a})`;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,2,0,Math.PI*2);
+    ctx.fill();
+
+    if(p.a<=0) particles.splice(i,1);
+  });
+
+  requestAnimationFrame(animate);
+}
+animate();
+
+document.addEventListener("click",(e)=>{
+  for(let i=0;i<8;i++){
+    particles.push({
+      x:e.clientX,
+      y:e.clientY,
+      vx:(Math.random()-0.5)*3,
+      vy:(Math.random()-0.5)*3,
+      a:1
+    });
+  }
+});
+
+</script>
+
+</body>
+</html>
